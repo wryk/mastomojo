@@ -1,0 +1,23 @@
+{
+  "name": "mastodon-emoji-viewer",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "output"
+  ],
+  "dependencies": {
+    "purescript-prelude": "^4.1.0",
+    "purescript-console": "^4.1.0",
+    "purescript-effect": "^2.0.0",
+    "purescript-halogen": "^4.0.0",
+    "purescript-affjax": "^6.0.0",
+    "purescript-milkis": "^6.0.1",
+    "purescript-web-events": "^1.0.0",
+    "purescript-foreign-generic": "^7.0.0",
+    "purescript-strings-extra": "^2.0.0"
+  },
+  "devDependencies": {
+    "purescript-psci-support": "^4.0.0"
+  }
+}
