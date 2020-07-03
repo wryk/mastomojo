@@ -1,0 +1,40 @@
+body {
+    font-family: sans-serif;
+    background-color: #282c37;
+    color: #ffffff;
+}
+
+ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15em, max-content));
+    grid-row-gap: 0.2em;
+
+    padding: 0;
+}
+
+li {
+    list-style: none;
+}
+
+li button {
+    all: unset;
+    cursor: pointer;
+
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    transition: all 0.1 ease-in-out;
+}
+
+li button:hover,
+li button:focus {
+    color: #d9e1e8;
+}
+
+li button img {
+    margin-right: 0.5em;
+    width: 20px;
+    height: 20px;
+}

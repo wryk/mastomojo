@@ -17,30 +17,30 @@ import Milkis as M
 import Milkis.Impl.Window as MI
 
 newtype Emoji = Emoji
-	{ shortcode :: String
-	, url:: String
-	, staticUrl:: String
-	, visibleInPicker:: Boolean
-	}
+    { shortcode :: String
+    , url:: String
+    , staticUrl:: String
+    , visibleInPicker:: Boolean
+    }
 
 derive instance genericEmoji :: Generic Emoji _
 
 instance showEmoji :: Show Emoji where
-	show = genericShow
+    show = genericShow
 
 instance eqEmoji :: Eq Emoji where
-	eq = genericEq
+    eq = genericEq
 
 instance ordEmoji :: Ord Emoji where
-	compare = genericCompare
+    compare = genericCompare
 
 instance decodeEmoji :: Decode Emoji where
-	decode = genericDecode $ defaultOptions { unwrapSingleConstructors = true, fieldTransform = snakeCase }
+    decode = genericDecode $ defaultOptions { unwrapSingleConstructors = true, fieldTransform = snakeCase }
 
 fetchCustomEmojis :: String -> Aff (Either Error (Either MultipleErrors (Array Emoji)))
 fetchCustomEmojis domain =
-	attempt
-	$ M.fetch MI.windowFetch (M.URL $ "https://" <> domain <> "/api/v1/custom_emojis") M.defaultFetchOptions
-	>>= M.text
-	<#> decodeJSON
-	>>> runExcept
+    attempt
+    $ M.fetch MI.windowFetch (M.URL $ "https://" <> domain <> "/api/v1/custom_emojis") M.defaultFetchOptions
+    >>= M.text
+    <#> decodeJSON
+    >>> runExcept

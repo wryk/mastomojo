@@ -1,4 +1,4 @@
-/bower_components/
+ /bower_components/
 /node_modules/
 /.pulp-cache/
 /output/
@@ -7,3 +7,6 @@
 /.psc*
 /.purs*
 /.psa*
+/.spago
+/.cache/
+/dist/
