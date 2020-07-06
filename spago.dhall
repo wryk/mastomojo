@@ -9,6 +9,7 @@ You can edit this file as you like.
   , "effect"
   , "foreign-generic"
   , "halogen"
+  , "halogen-hooks"
   , "milkis"
   , "prelude"
   , "psci-support"
