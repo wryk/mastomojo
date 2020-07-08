@@ -13,6 +13,8 @@ You can edit this file as you like.
   , "milkis"
   , "prelude"
   , "psci-support"
+  , "routing"
+  , "routing-duplex"
   , "strings-extra"
   , "web-events"
   ]

@@ -1,8 +1,9 @@
-module Component where
+module App.Page.Instance where
 
 import Prelude
 
 import Clipboard (writeText)
+import App.Data.Emoji (Emoji(..), fetchCustomEmojis)
 import Data.Array (filter, length, sort)
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
@@ -10,14 +11,16 @@ import Data.Tuple.Nested ((/\))
 import Effect.Aff.Class (class MonadAff)
 import Effect.Console (log)
 import Effect.Exception (Error, message)
-import Emoji (Emoji(..), fetchCustomEmojis)
 import Foreign (MultipleErrors)
 import Halogen as H
 import Halogen.HTML as HH
 import Halogen.HTML.Events as HE
 import Halogen.HTML.Properties as HP
 import Halogen.Hooks as Hooks
-import Web.Event.Event as Event
+
+type Input =
+    { domain :: String
+    }
 
 data Result
     = Fetching String
@@ -25,35 +28,36 @@ data Result
     | DecodeError String MultipleErrors
     | Success String (Array Emoji)
 
-component :: ∀ q i o m. MonadAff m => H.Component HH.HTML q i o m
-component = Hooks.component \_ _ -> Hooks.do
-    domain /\ domainId <- Hooks.useState "eldritch.cafe"
+component :: ∀ q o m. MonadAff m => H.Component HH.HTML q Input o m
+component = Hooks.component \_ { domain } -> Hooks.do
     animated /\ animatedId <- Hooks.useState false
     displayOnlyVisibleInPicker /\ displayOnlyVisibleInPickerId <- Hooks.useState true
     result /\ resultId <- Hooks.useState Nothing
+
+    Hooks.useLifecycleEffect do
+        Hooks.put resultId (Just $ Fetching domain)
+
+        response <- H.liftAff $ fetchCustomEmojis domain
+
+        case response of
+            Left error ->
+                Hooks.put resultId (Just $ NetworkError domain error)
+
+            Right content ->
+                case content of
+                    Left errors ->
+                        Hooks.put resultId (Just $ DecodeError domain errors)
+
+                    Right emojis ->
+                        Hooks.put resultId (Just $ Success domain (sort emojis))
+
+        pure $ Nothing
 
     let
         copyText text = do
             copyResult <- H.liftEffect $ writeText text
             H.liftEffect $ log $ text <> " " <> if copyResult then "copied" else "not copied"
 
-        handleSubmit event = do
-            H.liftEffect $ Event.preventDefault event
-            Hooks.put resultId (Just $ Fetching domain)
-
-            response <- H.liftAff $ fetchCustomEmojis domain
-
-            case response of
-                Left error ->
-                    Hooks.put resultId (Just $ NetworkError domain error)
-
-                Right content ->
-                    case content of
-                        Left errors ->
-                            Hooks.put resultId (Just $ DecodeError domain errors)
-
-                        Right emojis ->
-                            Hooks.put resultId (Just $ Success domain (sort emojis))
 
         emojiList emojis =
             HH.ul_
@@ -87,24 +91,6 @@ component = Hooks.component \_ _ -> Hooks.do
         HH.main_
             [ HH.h1_
                 [ HH.text "Mastodon emoji viewer"
-                ]
-            , HH.form
-                [ HE.onSubmit $ Just <<< handleSubmit
-                ]
-                [ HH.label_
-                    [ HH.text "Domain"
-                    , HH.input
-                        [ HP.required true
-                        , HP.value domain
-                        , HE.onValueInput $ Just <<< (Hooks.put domainId)
-                        ]
-                    ]
-                , HH.button
-                    [ HP.type_ HP.ButtonSubmit
-                    , HP.disabled $ domain == mempty
-                    ]
-                    [ HH.text "Fetch"
-                    ]
                 ]
             , HH.label_
                 [ HH.text "Animated"

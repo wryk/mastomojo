@@ -1,7 +1,8 @@
-module Emoji where
+module App.Data.Emoji where
 
 import Prelude
 import Control.Monad.Except (runExcept)
+import Data.Maybe (Maybe)
 import Data.Either (Either)
 import Data.Generic.Rep (class Generic)
 import Data.Generic.Rep.Show (genericShow)
@@ -21,6 +22,7 @@ newtype Emoji = Emoji
     , url:: String
     , staticUrl:: String
     , visibleInPicker:: Boolean
+    , category :: Maybe String
     }
 
 derive instance genericEmoji :: Generic Emoji _
