@@ -8,10 +8,10 @@ import Halogen (HalogenM)
 import Halogen.Hooks (HookM)
 
 class Monad m <= Navigate m where
-    navigate :: Route -> m Unit
+  navigate :: Route -> m Unit
 
 instance navigateHalogenM :: Navigate m => Navigate (HalogenM state action slots output m) where
-    navigate = lift <<< navigate
+  navigate = lift <<< navigate
 
 instance navigateHookM :: Navigate m => Navigate (HookM m) where
-    navigate = lift <<< navigate
+  navigate = lift <<< navigate

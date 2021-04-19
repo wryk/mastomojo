@@ -18,24 +18,24 @@ import Routing.PushState as RP
 
 main :: Effect Unit
 main = HA.runHalogenAff do
-    history <- H.liftEffect RP.makeInterface
+  history <- H.liftEffect RP.makeInterface
 
-    let
-        env :: Env
-        env =
-            { history
-            }
+  let
+    env :: Env
+    env =
+      { history
+      }
 
-        component :: ∀ i o. H.Component HH.HTML Router.Query i o Aff
-        component = H.hoist (runAppM env) Router.component
+    component :: ∀ i o. H.Component Router.Query i o Aff
+    component = H.hoist (runAppM env) Router.component
 
-    body <- HA.awaitBody
-    halogenIO <- runUI component unit body
+  body <- HA.awaitBody
+  halogenIO <- runUI component unit body
 
-    let
-        navigation :: Maybe Route -> Route -> Effect Unit
-        navigation old new = do
-            when (old /= Just new) do
-                launchAff_ $ halogenIO.query $ H.tell $ Router.Navigate new
+  let
+    navigation :: Maybe Route -> Route -> Effect Unit
+    navigation old new = do
+      when (old /= Just new) do
+        launchAff_ $ halogenIO.query $ H.mkTell $ Router.Navigate new
 
-    void $ H.liftEffect $ RP.matchesWith (RD.parse routeCodec) navigation history
+  void $ H.liftEffect $ RP.matchesWith (RD.parse routeCodec) navigation history

@@ -3,7 +3,7 @@ module App.Data.Route where
 import Prelude hiding ((/))
 
 import Data.Generic.Rep (class Generic)
-import Data.Generic.Rep.Show (genericShow)
+import Data.Show.Generic (genericShow)
 import Routing.Duplex (RouteDuplex', as, root, segment, string)
 import Routing.Duplex.Generic (noArgs, sum)
 

@@ -4,7 +4,6 @@ import Prelude
 
 import App.Capability.Navigate (class Navigate, navigate)
 import App.Data.Route as Route
-import Data.Maybe (Maybe(..))
 import Data.Tuple.Nested ((/\))
 import Effect.Class (class MonadEffect)
 import Halogen as H
@@ -15,10 +14,10 @@ import Halogen.HTML.Properties as HP
 import Web.Event.Event as Event
 
 component ::
-    ∀ q i o m.
+  ∀ q i o m.
     MonadEffect m =>
     Navigate m =>
-    H.Component HH.HTML q i o m
+    H.Component q i o m
 component = Hooks.component \_ _ -> Hooks.do
     domain /\ domainId <- Hooks.useState "eldritch.cafe"
 
@@ -31,16 +30,16 @@ component = Hooks.component \_ _ -> Hooks.do
 
     Hooks.pure do
         HH.div_
-            [ HH.h1_ [ HH.text "Home" ]
+            [ HH.h1_ [ HH.text "Mastomojo" ]
             , HH.form
-                [ HE.onSubmit $ Just <<< handleSubmit
+                [ HE.onSubmit handleSubmit
                 ]
                 [ HH.label_
                     [ HH.text "Domain"
                     , HH.input
                         [ HP.required true
                         , HP.value domain
-                        , HE.onValueInput $ Just <<< setDomain
+                        , HE.onValueInput setDomain
                         ]
                     ]
                 , HH.button

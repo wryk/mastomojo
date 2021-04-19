@@ -2,16 +2,13 @@ module App.AppM where
 
 import Prelude
 
-import App.Capability.Navigate (class Navigate, navigate)
+import App.Capability.Navigate (class Navigate)
 import App.Data.Route (routeCodec)
-import App.Data.Route as Route
 import App.Env (Env)
 import Control.Monad.Reader.Trans (class MonadAsk, ReaderT, asks, runReaderT)
-import Data.Maybe (Maybe(..))
 import Effect.Aff (Aff)
-import Effect.Aff.Class (class MonadAff, liftAff)
+import Effect.Aff.Class (class MonadAff)
 import Effect.Class (class MonadEffect, liftEffect)
-import Effect.Ref as Ref
 import Foreign (unsafeToForeign)
 import Routing.Duplex as RD
 import Type.Equality (class TypeEquals, from)
@@ -31,9 +28,9 @@ derive newtype instance monadEffectAppM :: MonadEffect AppM
 derive newtype instance monadAffAppM :: MonadAff AppM
 
 instance monadAskAppM :: TypeEquals e Env => MonadAsk e AppM where
-    ask = AppM $ asks from
+  ask = AppM $ asks from
 
 instance navigateAppM :: Navigate AppM where
-    navigate route = do
-        history <- asks _.history
-        liftEffect $ history.pushState (unsafeToForeign {}) (RD.print routeCodec route)
+  navigate route = do
+    history <- asks _.history
+    liftEffect $ history.pushState (unsafeToForeign {}) (RD.print routeCodec route)
